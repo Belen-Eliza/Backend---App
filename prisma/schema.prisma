@@ -1,0 +1,42 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  mail String @unique
+  name String
+
+  gastos Gasto[]
+}
+
+model Category { //Las categorías de gastos
+  id Int @id @default(autoincrement())
+  name String
+  description String
+
+  gastos Gasto[]
+}
+
+model Gasto {
+  id Int @id @default(autoincrement())
+  monto Float
+  description String
+  cant_cuotas Int @default(0)
+  fecha DateTime //@default()  por defecto fecha de hoy
+  user User @relation(fields: [user_id],references: [id])
+  user_id Int 
+  category Category @relation(fields: [category_id],references: [id])
+  category_id Int
+}
+
+model Ahorro {
+  id Int @id @default(autoincrement())
+  monto Float
+  description String
+}
