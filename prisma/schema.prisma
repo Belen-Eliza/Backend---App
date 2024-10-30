@@ -11,32 +11,71 @@ model User {
   id Int @id @default(autoincrement())
   mail String @unique
   name String
-
+  saldo Float //saldo total, para home page
   gastos Gasto[]
+  gastos_fijos GastoFijo[]
 }
 
-model Category { //Las categorías de gastos
+model CategoryGasto { //Las categorías de gastos
   id Int @id @default(autoincrement())
   name String
   description String
 
   gastos Gasto[]
+  gastos_fijos GastoFijo[]
+}
+model CategoryIngreso { //Las categorías de ingresos
+  id Int @id @default(autoincrement())
+  name String
+  description String
+
+  ingresos Ingreso[]
 }
 
 model Gasto {
   id Int @id @default(autoincrement())
   monto Float
-  description String
-  cant_cuotas Int @default(0)
+  cant_cuotas Int @default(1)
   fecha DateTime //@default()  por defecto fecha de hoy
   user User @relation(fields: [user_id],references: [id])
   user_id Int 
-  category Category @relation(fields: [category_id],references: [id])
+  category CategoryGasto @relation(fields: [category_id],references: [id])
   category_id Int
 }
 
-model Ahorro {
+model GastoFijo {
+  id Int @id @default(autoincrement())
+  monto Float
+  fecha_inicial DateTime //@default()  por defecto fecha de hoy
+  cant_meses Int //time? 
+  user User @relation(fields: [user_id],references: [id])
+  user_id Int 
+  category CategoryGasto @relation(fields: [category_id],references: [id])
+  category_id Int
+}
+
+model Ingreso {
   id Int @id @default(autoincrement())
   monto Float
   description String
+  category CategoryIngreso @relation(fields: [category_id],references: [id])
+  category_id Int
+}
+
+model Presupuesto {
+  id Int @id @default(autoincrement())
+  descripcion String
+  montoTotal Float
+  cant_cuotas Int @default(1)
+  fecha_objetivo DateTime
+  total_acumulado Float //guardar o calcular?
+  ahorro Ahorro_Presupuesto[] 
+}
+
+model Ahorro_Presupuesto {
+  id Int @id @default(autoincrement())
+  monto Float
+  fecha DateTime
+  presupuesto Presupuesto @relation(fields: [presupuesto_id],references: [id])
+  presupuesto_id Int
 }
