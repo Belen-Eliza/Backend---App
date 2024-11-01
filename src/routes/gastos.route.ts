@@ -48,6 +48,15 @@ const GastosRoute = (prisma: PrismaClient)=>{
             category_id
           },
         })
+        const estado_anterior = await prisma.user.findUnique({
+          select: {saldo:true},
+          where: {id:user_id}
+      })
+      var nuevo_saldo = estado_anterior==null ? 0 : estado_anterior.saldo -monto;
+      await prisma.user.update({
+          data: {saldo: nuevo_saldo},
+          where: {id:user_id}
+      })
         res.json(result);
     })
 

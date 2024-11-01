@@ -13,8 +13,10 @@ model User {
   name String
   password String
   saldo Float //saldo total, para home page
+
   gastos Gasto[]
   gastos_fijos GastoFijo[]
+  ingresos Ingreso[]
 }
 
 model CategoryGasto { //Las categorías de gastos
@@ -61,6 +63,8 @@ model Ingreso {
   description String
   category CategoryIngreso @relation(fields: [category_id],references: [id])
   category_id Int
+  user User @relation(fields: [user_id],references: [id])
+  user_id Int
 }
 
 model Presupuesto {
