@@ -17,6 +17,8 @@ model User {
   gastos Gasto[]
   gastos_fijos GastoFijo[]
   ingresos Ingreso[]
+
+  Presupuesto Presupuesto[]
 }
 
 model CategoryGasto { //Las categorías de gastos
@@ -74,6 +76,8 @@ model Presupuesto {
   cant_cuotas Int @default(1)
   fecha_objetivo DateTime
   total_acumulado Float //guardar o calcular?
+  user User @relation(fields: [user_id],references: [id])
+  user_id Int
   ahorro Ahorro_Presupuesto[] 
 }
 
