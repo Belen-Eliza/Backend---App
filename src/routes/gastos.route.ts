@@ -24,19 +24,32 @@ const GastosRoute = (prisma: PrismaClient)=>{
         }
         res.json(gastos)
     })
-    router.post('/signup', async (req, res) => {
-        const { name, mail, password } = req.body;
-        const result = await prisma.user.create({
+
+
+    router.get('/gastos_categoria',async (req, res) => {
+        const {user_id} = req.query;
+        const gastos_por_cate = await prisma.gasto.groupBy({
+            by: "category_id",
+            where: { user_id:Number(user_id)},
+            _sum: {monto:true}
+            
+        })
+        res.json(gastos_por_cate)
+    })
+
+    router.post('/cargar_gasto', async (req, res) => {
+        const { monto, cant_cuotas, fecha,user_id,category_id } = req.body;
+        const result = await prisma.gasto.create({
           data: {
-            name,
-            mail,
-            password,
-            saldo: 0  //que empiece en 0 y se vaya cargando o cargar valor inicial??
+            monto, 
+            cant_cuotas,
+            fecha: Date.now().toString(), //fecha de hoy 
+            user_id,
+            category_id
           },
         })
         res.json(result);
     })
-
 
     return router
 }
