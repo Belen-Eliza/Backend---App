@@ -1,5 +1,5 @@
 import { type PrismaClient, type Prisma } from "@prisma/client"
-import { Router, type Express } from "express"
+import { Router } from "express"
 
 const GastosRoute = (prisma: PrismaClient)=>{
     const router = Router();
@@ -38,7 +38,7 @@ const GastosRoute = (prisma: PrismaClient)=>{
     })
 
     router.post('/cargar_gasto', async (req, res) => {
-        const { monto, cant_cuotas, fecha,user_id,category_id } = req.body;
+        const { monto, cant_cuotas,user_id,category_id } = req.body; //campos sueltos o dentro de un objeto Gasto ?
         const result = await prisma.gasto.create({
           data: {
             monto, 

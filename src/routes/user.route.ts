@@ -1,5 +1,5 @@
 import { type PrismaClient, type Prisma } from "@prisma/client"
-import { Router, type Express } from "express"
+import { Router } from "express"
 
 const UserRoute = (prisma: PrismaClient)=>{
     const router = Router();
