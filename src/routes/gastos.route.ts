@@ -38,26 +38,29 @@ const GastosRoute = (prisma: PrismaClient)=>{
     })
 
     router.post('/cargar_gasto', async (req, res) => {
-        const { monto, cant_cuotas,user_id,category_id } = req.body; //campos sueltos o dentro de un objeto Gasto ?
-        const result = await prisma.gasto.create({
-          data: {
-            monto, 
-            cant_cuotas,
-            fecha: Date.now().toString(), //fecha de hoy 
-            user_id,
-            category_id
-          },
-        })
-        const estado_anterior = await prisma.user.findUnique({
-          select: {saldo:true},
-          where: {id:user_id}
+      const { monto, cant_cuotas,user_id,category_id } = req.body; //campos sueltos o dentro de un objeto Gasto ?
+      
+      const user =await prisma.user.findUnique({
+        where: {id:user_id}
       })
-      var nuevo_saldo = estado_anterior==null ? 0 : estado_anterior.saldo -monto;
+      if (!user ){
+        res.status(400).send({message: "Error al cargar los datos"})
+        return
+      }
+      const result = await prisma.gasto.create({
+        data: {
+          monto, 
+          cant_cuotas,
+          fecha: Date.now().toString(), //fecha de hoy 
+          user_id,
+          category_id
+        },
+      })
       await prisma.user.update({
-          data: {saldo: nuevo_saldo},
-          where: {id:user_id}
+        data: {saldo: user.saldo-monto},
+        where: {id:user_id}
       })
-        res.json(result);
+      res.json(result);
     })
 
     return router
