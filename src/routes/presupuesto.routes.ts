@@ -3,7 +3,7 @@ import { Router } from "express"
 
 const PresupuestoRoute = (prisma: PrismaClient)=>{
     const router = Router();
-    router.post('/cargar_presupuesto', async (req, res) => {
+    router.post('/', async (req, res) => {
         const { montoTotal, descripcion,user_id,fecha_objetivo,cant_cuotas } = req.body;
         const result = await prisma.presupuesto.create({
             data:{

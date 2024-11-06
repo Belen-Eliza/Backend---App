@@ -3,7 +3,7 @@ import { Router } from "express"
 
 const Ahorro_PresupuestoRoute = (prisma: PrismaClient)=>{
     const router = Router();
-    router.post('/cargar_ahorro_presupuesto', async (req, res) => {
+    router.post('/', async (req, res) => {
         const { monto, fecha,user_id,presupuesto_id } = req.body;
 
         //chequear que los datos sean correctos
@@ -36,7 +36,7 @@ const Ahorro_PresupuestoRoute = (prisma: PrismaClient)=>{
 
         res.json(result);
     })
-    router.get('/todos',  async (req, res) =>{
+    router.get('/',  async (req, res) =>{
         const {presupuesto_id}=req.body();
         const result = await prisma.ahorro_Presupuesto.findMany({
             select: {monto:true,fecha:true},

@@ -3,7 +3,7 @@ import { Router } from "express"
 
 const IngresoRoute = (prisma: PrismaClient)=>{
     const router = Router();
-    router.post('/cargar_ingreso', async (req, res) => {
+    router.post('/', async (req, res) => {
         const { monto, descripcion,user_id,category_id } = req.body;
         
         //chequear que los datos sean correctos

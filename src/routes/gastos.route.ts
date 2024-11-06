@@ -37,7 +37,7 @@ const GastosRoute = (prisma: PrismaClient)=>{
         res.json(gastos_por_cate)
     })
 
-    router.post('/cargar', async (req, res) => {
+    router.post('/', async (req, res) => {
       const { monto, cant_cuotas,user_id,category_id } = req.body; //campos sueltos o dentro de un objeto Gasto ?
       
       const user =await prisma.user.findUnique({

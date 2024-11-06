@@ -3,7 +3,7 @@ import { Router } from "express"
 
 const GastosFijosRoute = (prisma: PrismaClient)=>{
     const router = Router();
-    router.post('/cargar_gasto_fijo', async (req, res) => {
+    router.post('/', async (req, res) => {
         var { monto, cant_meses, fecha_inicial,user_id,category_id } = req.body;
         if (fecha_inicial===undefined) {
             fecha_inicial=Date.now().toString();

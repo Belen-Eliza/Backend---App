@@ -27,23 +27,3 @@ const server = app.listen(3000, () =>
 🚀 Server ready at: http://localhost:3000
 `))
 
-
-/* import { PrismaClient } from '@prisma/client'
-
-
-
-const prisma = new PrismaClient()
-
-async function main() {
-    
-}
-
-main()
-  .then(async () => {
-    await prisma.$disconnect()
-  })
-  .catch(async (e) => {
-    console.error(e)
-    await prisma.$disconnect()
-    process.exit(1)
-  }) */ 
