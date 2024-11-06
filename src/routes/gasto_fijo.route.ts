@@ -19,11 +19,20 @@ const GastosFijosRoute = (prisma: PrismaClient)=>{
         })
         res.json(result);
     })
-    router.get('/gastos_fijos',  async (req, res) =>{
+    router.get('/todos',  async (req, res) =>{ //todos los GF del usuario
         const {user_id}=req.body();
         const result = await prisma.gastoFijo.findMany({
             select: {monto:true,fecha_inicial:true,cant_meses:true,category_id:true},
             where: {user_id: user_id}
+        })
+        res.json(result);
+    })
+
+    router.get('/',async (req, res) =>{ 
+        const {id_gasto}=req.body();
+        const result = await prisma.gastoFijo.findUnique({
+            select: {monto:true,fecha_inicial:true,cant_meses:true,category_id:true},
+            where: {id: id_gasto}
         })
         res.json(result);
     })

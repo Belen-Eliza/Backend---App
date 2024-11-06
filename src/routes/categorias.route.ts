@@ -4,13 +4,13 @@ import { Router } from "express"
 const CategoriaRoute = (prisma: PrismaClient)=>{
     const router = Router();
     
-    router.get('/categoriasGastos',  async (req, res) =>{
+    router.get('/de_gastos',  async (req, res) =>{ //todas las categorias de gastos
         const result = await prisma.categoryGasto.findMany({
             select: {id:true,name:true,description:true},
         })
         res.json(result);
     })
-    router.get('/categoriaGasto',  async (req, res) =>{
+    router.get('/',  async (req, res) =>{  //categoria de un gasto especifico
         const {id_cat}=req.body();
         const result = await prisma.categoryGasto.findUnique({
             
@@ -19,13 +19,13 @@ const CategoriaRoute = (prisma: PrismaClient)=>{
         res.json(result);
     })
 
-    router.get('/categoriasIngresos',  async (req, res) =>{
+    router.get('/de_ingresos',  async (req, res) =>{  //todas las categorias de ingresos
         const result = await prisma.categoryIngreso.findMany({
             select: {id:true,name:true,description:true},
         })
         res.json(result);
     })
-    router.get('/categoriaIngreso',  async (req, res) =>{
+    router.get('/ingreso',  async (req, res) =>{ //categoria de un ingreso especifico
         const {id_cat}=req.body();
         const result = await prisma.categoryIngreso.findUnique({
             

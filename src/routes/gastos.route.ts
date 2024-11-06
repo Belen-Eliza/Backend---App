@@ -4,7 +4,7 @@ import { Router } from "express"
 const GastosRoute = (prisma: PrismaClient)=>{
     const router = Router();
 
-    router.get('/gastos', async (req, res) => { //todos los gastos del usuario, para el historial
+    router.get('/', async (req, res) => { //todos los gastos del usuario, para el historial
         const {user_id} = req.query
         const gastos = await prisma.gasto.findMany({
           select: {
@@ -26,7 +26,7 @@ const GastosRoute = (prisma: PrismaClient)=>{
     })
 
 
-    router.get('/gastos_categoria',async (req, res) => {
+    router.get('/por_categoria',async (req, res) => {
         const {user_id} = req.query;
         const gastos_por_cate = await prisma.gasto.groupBy({
             by: "category_id",
@@ -37,7 +37,7 @@ const GastosRoute = (prisma: PrismaClient)=>{
         res.json(gastos_por_cate)
     })
 
-    router.post('/cargar_gasto', async (req, res) => {
+    router.post('/cargar', async (req, res) => {
       const { monto, cant_cuotas,user_id,category_id } = req.body; //campos sueltos o dentro de un objeto Gasto ?
       
       const user =await prisma.user.findUnique({
