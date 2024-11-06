@@ -12,7 +12,7 @@ model User {
   mail String @unique
   name String
   password String
-  saldo Float //saldo total, para home page
+  saldo Float @default(0)
 
   gastos Gasto[]
   gastos_fijos GastoFijo[]
