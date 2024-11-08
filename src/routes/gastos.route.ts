@@ -8,7 +8,7 @@ const GastosRoute = (prisma: PrismaClient)=>{
         const {user_id} = req.params
         const gastos = await prisma.gasto.findMany({
           select: {
-            monto: true, cant_cuotas: true,fecha: true, category_id:true
+            monto: true, cant_cuotas: true,fecha: true, category: true
           },
           where: {
             user_id: Number(user_id)
@@ -16,7 +16,6 @@ const GastosRoute = (prisma: PrismaClient)=>{
           orderBy: {
             fecha: "desc" //más recientes primero
           },
-          
         })
         if(!gastos){
             res.status(400).send("Todavía no has cargado ningún gasto") //error acá que se atrapa en el front-end?
