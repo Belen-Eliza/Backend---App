@@ -29,11 +29,11 @@ const IngresoRoute = (prisma: PrismaClient)=>{
        
         res.json(result);
     })
-    router.get('/',  async (req, res) =>{
-        const {user_id}=req.body();
+    router.get('/:user_id',  async (req, res) =>{
+        const {user_id}=req.params;
         const result = await prisma.ingreso.findMany({
             select: {monto:true,category_id:true,description:true},
-            where: {user_id: user_id}
+            where: {user_id: parseInt(user_id)}
         })
         res.json(result);
     })

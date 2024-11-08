@@ -13,20 +13,20 @@ const PresupuestoRoute = (prisma: PrismaClient)=>{
         
         res.json(result);
     })
-    router.get('/todos',  async (req, res) =>{
-        const {user_id}=req.body();
+    router.get('/todos/:user_id',  async (req, res) =>{
+        const {user_id}=req.params;
         const result = await prisma.presupuesto.findMany({
             select: {descripcion:true,montoTotal:true,fecha_objetivo:true},
-            where: {user_id: user_id},
+            where: {user_id: parseInt(user_id)},
             orderBy: {fecha_objetivo:"desc"}
         })
         res.json(result);
     })
-    router.get('/',  async (req, res) =>{
-        const {id_presupuesto}=req.body();
+    router.get('/:id_presupuesto',  async (req, res) =>{
+        const {id_presupuesto}=req.params;
         const result = await prisma.presupuesto.findUnique({
             select: {descripcion:true,montoTotal:true,cant_cuotas:true,fecha_objetivo:true,total_acumulado:true},
-            where: {id: id_presupuesto}
+            where: {id: parseInt(id_presupuesto)}
         })
         res.json(result);
     })

@@ -4,8 +4,8 @@ import { Router } from "express"
 const GastosRoute = (prisma: PrismaClient)=>{
     const router = Router();
 
-    router.get('/', async (req, res) => { //todos los gastos del usuario, para el historial
-        const {user_id} = req.query
+    router.get('/:user_id', async (req, res) => { //todos los gastos del usuario, para el historial
+        const {user_id} = req.params
         const gastos = await prisma.gasto.findMany({
           select: {
             monto: true, cant_cuotas: true,fecha: true, category_id:true
@@ -26,8 +26,8 @@ const GastosRoute = (prisma: PrismaClient)=>{
     })
 
 
-    router.get('/por_categoria',async (req, res) => {
-        const {user_id} = req.query;
+    router.get('/por_categoria/:user_id',async (req, res) => {
+        const {user_id} = req.params;
         const gastos_por_cate = await prisma.gasto.groupBy({
             by: "category_id",
             where: { user_id:Number(user_id)},

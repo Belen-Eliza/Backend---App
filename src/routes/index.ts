@@ -15,7 +15,7 @@ const addRoutes = (app: Express, prisma: PrismaClient) => {
             message: "Hello world!"
         })
     })
-    // Acá van tus custom routers
+    
     app.use('/users/', UserRoute(prisma))
     app.use('/gastos/', GastoRoute(prisma))
     app.use('/categorias/', CategoriaRoute(prisma))

@@ -10,11 +10,11 @@ const CategoriaRoute = (prisma: PrismaClient)=>{
         })
         res.json(result);
     })
-    router.get('/',  async (req, res) =>{  //categoria de un gasto especifico
-        const {id_cat}=req.body();
+    router.get('/:id_cat',  async (req, res) =>{  //categoria de un gasto especifico
+        const {id_cat}=req.params;
         const result = await prisma.categoryGasto.findUnique({
             
-            where: {id: id_cat}
+            where: {id: parseInt(id_cat)}
         })
         res.json(result);
     })
@@ -25,11 +25,11 @@ const CategoriaRoute = (prisma: PrismaClient)=>{
         })
         res.json(result);
     })
-    router.get('/ingreso',  async (req, res) =>{ //categoria de un ingreso especifico
-        const {id_cat}=req.body();
+    router.get('/de_ingresos/:id_cat',  async (req, res) =>{ //categoria de un ingreso especifico
+        const {id_cat}=req.params;
         const result = await prisma.categoryIngreso.findUnique({
             
-            where: {id: id_cat}
+            where: {id: parseInt(id_cat)}
         })
         res.json(result);
     })

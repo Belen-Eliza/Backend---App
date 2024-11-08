@@ -36,11 +36,11 @@ const Ahorro_PresupuestoRoute = (prisma: PrismaClient)=>{
 
         res.json(result);
     })
-    router.get('/',  async (req, res) =>{
-        const {presupuesto_id}=req.body();
+    router.get('/:presupuesto_id',  async (req, res) =>{
+        const {presupuesto_id}=req.params;
         const result = await prisma.ahorro_Presupuesto.findMany({
             select: {monto:true,fecha:true},
-            where: {presupuesto_id: presupuesto_id}
+            where: {presupuesto_id: parseInt(presupuesto_id)}
         })
         res.json(result);
     })

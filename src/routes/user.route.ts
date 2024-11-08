@@ -38,7 +38,7 @@ const UserRoute = (prisma: PrismaClient)=>{
         
     })
     router.patch('/edit_profile/:id',async (req, res) => { //cambiar otros get y put
-      const {id} =req.params
+      const {id} =req.params;
       const { new_name, new_mail, new_password } = req.body; //no mandar atributos a no actualizar, o chequear
       const result = await prisma.user.update({
           data: {
