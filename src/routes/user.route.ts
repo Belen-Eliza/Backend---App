@@ -39,14 +39,16 @@ const UserRoute = (prisma: PrismaClient)=>{
   router.post('/signup', async (req, res) => {
     
     const { name, mail, password } = req.body;
-    try {const result = await prisma.user.create({
-      data: {
-        name,
-        mail,
-        password
-      },
-    })
-    res.json(result);}
+    try {
+      const result = await prisma.user.create({
+        data: {
+          name,
+          mail,
+          password
+        },
+      })
+    res.json(result);
+    }
     catch(e){
       console.log(req)
     }
