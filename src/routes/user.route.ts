@@ -31,6 +31,7 @@ const UserRoute = (prisma: PrismaClient)=>{
         }
       })
       if(!user || user.password!=password_attempt){
+          
           res.status(400).send("Usuario o contraseña incorrectos")
           return
       }

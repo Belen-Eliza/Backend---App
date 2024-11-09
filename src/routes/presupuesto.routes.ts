@@ -16,7 +16,7 @@ const PresupuestoRoute = (prisma: PrismaClient)=>{
     router.get('/todos/:user_id',  async (req, res) =>{
         const {user_id}=req.params;
         const result = await prisma.presupuesto.findMany({
-            select: {descripcion:true,montoTotal:true,fecha_objetivo:true},
+            select: {id:true,descripcion:true,montoTotal:true,fecha_objetivo:true},
             where: {user_id: parseInt(user_id)},
             orderBy: {fecha_objetivo:"desc"}
         })

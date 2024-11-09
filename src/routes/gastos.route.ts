@@ -24,6 +24,31 @@ const GastosRoute = (prisma: PrismaClient)=>{
         res.json(gastos)
     })
 
+    router.get('/por_fecha/:user_id/:fecha_desde/:fecha_hasta', async (req,res)=>{
+      const {fecha_desde,fecha_hasta,user_id} = req.params;
+      console.log("aca")
+      const gastos = await prisma.gasto.findMany({
+        select: {
+          monto: true, cant_cuotas: true,fecha: true, category: true
+        },
+        where: {
+          user_id: Number(user_id),
+          fecha: {
+            lte: fecha_desde,
+            gte: fecha_hasta,
+          },
+        },
+        orderBy: {
+          fecha: "desc" 
+        },
+      })
+      if(!gastos){
+          res.status(400).send("No hay gastos en ese rango") 
+          return
+      }
+      res.json(gastos)
+    })
+
 
     router.get('/por_categoria/:user_id',async (req, res) => {
         const {user_id} = req.params;
