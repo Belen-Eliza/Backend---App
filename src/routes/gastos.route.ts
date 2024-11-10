@@ -43,7 +43,7 @@ const GastosRoute = (prisma: PrismaClient)=>{
           },
         },
         orderBy: {
-          fecha: "desc" 
+          fecha: "asc" 
         },
       })
       
