@@ -64,7 +64,6 @@ const GastosRoute = (prisma: PrismaClient)=>{
 
     router.post('/', async (req, res) => {
       const { monto, cant_cuotas,user_id,category_id } = req.body; 
-      
       const user =await prisma.user.findUnique({
         where: {id:user_id}
       })
@@ -76,14 +75,12 @@ const GastosRoute = (prisma: PrismaClient)=>{
         data: {
           monto, 
           cant_cuotas,
-          fecha: Date.now().toString(), //fecha de hoy 
-          user_id,
+          fecha: (new Date()).toISOString(), //fecha de hoy 
           user: {
             connect:{
               id: user_id
             }
           },
-          category_id,
           category: {
             connect:{
               id: category_id
@@ -95,6 +92,7 @@ const GastosRoute = (prisma: PrismaClient)=>{
         data: {saldo: user.saldo-monto},
         where: {id:user_id}
       })
+
       res.json(result);
     })
 

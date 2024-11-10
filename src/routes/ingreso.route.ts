@@ -18,7 +18,7 @@ const IngresoRoute = (prisma: PrismaClient)=>{
 
         const result = await prisma.ingreso.create({
             data:{
-                monto, description:descripcion, category_id, user_id,
+                monto, description:descripcion, 
                 user:{
                     connect:{
                         id:user_id

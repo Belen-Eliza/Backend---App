@@ -14,13 +14,12 @@ const GastosFijosRoute = (prisma: PrismaClient)=>{
             monto, 
             cant_meses,
             fecha_inicial,
-            user_id,
+            
             user:{
                 connect:{
                     id:user_id
                 }
             },
-            category_id,
             category: {
                 connect:{
                     id:category_id
