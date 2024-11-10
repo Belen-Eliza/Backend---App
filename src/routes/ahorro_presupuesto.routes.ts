@@ -20,7 +20,12 @@ const Ahorro_PresupuestoRoute = (prisma: PrismaClient)=>{
 
         const result = await prisma.ahorro_Presupuesto.create({
             data:{
-                monto, fecha,presupuesto_id
+                monto, fecha,presupuesto_id,
+                presupuesto: {
+                    connect: {
+                        id:presupuesto_id
+                    }
+                }
             }
         })
 

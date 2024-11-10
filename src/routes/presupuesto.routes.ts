@@ -7,7 +7,12 @@ const PresupuestoRoute = (prisma: PrismaClient)=>{
         const { montoTotal, descripcion,user_id,fecha_objetivo,cant_cuotas } = req.body;
         const result = await prisma.presupuesto.create({
             data:{
-                montoTotal,descripcion,cant_cuotas,fecha_objetivo,user_id,total_acumulado:0
+                montoTotal,descripcion,cant_cuotas,fecha_objetivo,user_id,total_acumulado:0,
+                user: {
+                    connect:{
+                        id:user_id
+                    }
+                }
             }
         })
         

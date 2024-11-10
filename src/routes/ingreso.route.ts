@@ -1,5 +1,6 @@
 import { type PrismaClient, type Prisma } from "@prisma/client"
 import { Router } from "express"
+import { connect } from "http2";
 
 const IngresoRoute = (prisma: PrismaClient)=>{
     const router = Router();
@@ -17,7 +18,17 @@ const IngresoRoute = (prisma: PrismaClient)=>{
 
         const result = await prisma.ingreso.create({
             data:{
-                monto, description:descripcion, category_id, user_id
+                monto, description:descripcion, category_id, user_id,
+                user:{
+                    connect:{
+                        id:user_id
+                    }
+                },
+                category:{
+                    connect:{
+                        id:category_id
+                    }
+                }
             }
         })
 

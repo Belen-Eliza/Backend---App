@@ -1,5 +1,6 @@
 import { type PrismaClient, type Prisma } from "@prisma/client"
 import { Router } from "express"
+import { connect } from "http2";
 
 const GastosRoute = (prisma: PrismaClient)=>{
     const router = Router();
@@ -77,7 +78,17 @@ const GastosRoute = (prisma: PrismaClient)=>{
           cant_cuotas,
           fecha: Date.now().toString(), //fecha de hoy 
           user_id,
-          category_id
+          user: {
+            connect:{
+              id: user_id
+            }
+          },
+          category_id,
+          category: {
+            connect:{
+              id: category_id
+            }
+          }
         },
       })
       await prisma.user.update({

@@ -1,5 +1,6 @@
 import { type PrismaClient, type Prisma } from "@prisma/client"
 import { Router } from "express"
+import { connect } from "http2";
 
 const GastosFijosRoute = (prisma: PrismaClient)=>{
     const router = Router();
@@ -14,7 +15,17 @@ const GastosFijosRoute = (prisma: PrismaClient)=>{
             cant_meses,
             fecha_inicial,
             user_id,
-            category_id
+            user:{
+                connect:{
+                    id:user_id
+                }
+            },
+            category_id,
+            category: {
+                connect:{
+                    id:category_id
+                }
+            }
           },
         })
         res.json(result);
