@@ -41,7 +41,7 @@ model Gasto {
   id Int @id @default(autoincrement())
   monto Float
   cant_cuotas Int @default(1)
-  fecha DateTime //@default()  por defecto fecha de hoy
+  fecha DateTime 
   user User @relation(fields: [user_id],references: [id])
   user_id Int 
   category CategoryGasto @relation(fields: [category_id],references: [id])
@@ -51,7 +51,7 @@ model Gasto {
 model GastoFijo {
   id Int @id @default(autoincrement())
   monto Float
-  fecha_inicial DateTime //@default()  por defecto fecha de hoy
+  fecha_inicial DateTime 
   cant_meses Int //time? 
   user User @relation(fields: [user_id],references: [id])
   user_id Int 
