@@ -17,7 +17,7 @@ const GastosRoute = (prisma: PrismaClient)=>{
             fecha: "desc" //más recientes primero
           },
         })
-        if(!gastos){
+        if(gastos.length==0){
             res.status(400).send("Todavía no has cargado ningún gasto") //error acá que se atrapa en el front-end?
             return
         }
