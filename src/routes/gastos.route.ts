@@ -2,9 +2,11 @@ import { type PrismaClient, type Prisma } from "@prisma/client"
 import { Router } from "express"
 import { connect } from "http2";
 
+
+
 const GastosRoute = (prisma: PrismaClient)=>{
     const router = Router();
-
+    
     router.get('/:user_id', async (req, res) => { //todos los gastos del usuario, para el historial
         const {user_id} = req.params
         const gastos = await prisma.gasto.findMany({
@@ -19,10 +21,11 @@ const GastosRoute = (prisma: PrismaClient)=>{
           },
         })
         if(gastos.length==0){
-            res.status(400).send("Todavía no has cargado ningún gasto") //error acá que se atrapa en el front-end?
+            res.status(400).send("Todavía no has cargado ningún gasto") 
             return
         }
         res.json(gastos)
+        
     })
 
     router.get('/por_fecha/:user_id/:fecha_desde/:fecha_hasta', async (req,res)=>{
@@ -33,9 +36,10 @@ const GastosRoute = (prisma: PrismaClient)=>{
         },
         where: {
           user_id: Number(user_id),
+          
           fecha: {
-            lte: fecha_desde,
-            gte: fecha_hasta,
+            lte: fecha_hasta,
+            gte: fecha_desde,
           },
         },
         orderBy: {
