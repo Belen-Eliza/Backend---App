@@ -10,7 +10,7 @@ const CategoriaRoute = (prisma: PrismaClient)=>{
         })
         res.json(result);
     })
-    router.get('/:id_cat',  async (req, res) =>{  //categoria de un gasto especifico
+    router.get('/de_gastos/:id_cat',  async (req, res) =>{  //categoria de un gasto especifico
         const {id_cat}=req.params;
         const result = await prisma.categoryGasto.findUnique({
             
