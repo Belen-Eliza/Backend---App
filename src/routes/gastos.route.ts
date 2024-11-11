@@ -58,9 +58,10 @@ const GastosRoute = (prisma: PrismaClient)=>{
     router.get('/por_categoria/:user_id',async (req, res) => {
         const {user_id} = req.params;
         const gastos_por_cate = await prisma.gasto.groupBy({
-            by: "category_id",
+            by: ["category_id"],
+            
             where: { user_id:Number(user_id)},
-            _sum: {monto:true}
+            _sum: {monto:true},
             
         })
         res.json(gastos_por_cate)

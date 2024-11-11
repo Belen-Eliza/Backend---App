@@ -88,3 +88,4 @@ model Ahorro_Presupuesto {
   presupuesto Presupuesto @relation(fields: [presupuesto_id],references: [id])
   presupuesto_id Int
 }
+
