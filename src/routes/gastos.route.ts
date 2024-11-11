@@ -7,14 +7,19 @@ import { connect } from "http2";
 const GastosRoute = (prisma: PrismaClient)=>{
     const router = Router();
     
-    router.get('/:user_id', async (req, res) => { //todos los gastos del usuario, para el historial
-        const {user_id} = req.params
+    router.get('/historial/:user_id/:fecha_desde/:fecha_hasta', async (req, res) => { 
+        const {user_id,fecha_desde,fecha_hasta} = req.params
         const gastos = await prisma.gasto.findMany({
           select: {
             monto: true, cant_cuotas: true,fecha: true, category: true
           },
           where: {
-            user_id: Number(user_id)
+            user_id: Number(user_id),
+              
+            fecha: {
+              lte: fecha_hasta,
+              gte: fecha_desde,
+            },
           },
           orderBy: {
             fecha: "desc" //más recientes primero
