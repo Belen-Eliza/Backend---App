@@ -59,8 +59,29 @@ const GastosRoute = (prisma: PrismaClient)=>{
       res.json(gastos)
     })
 
+    router.get('/por_categoria/:user_id/:cat_id',async (req, res) => {
+      const {user_id,cat_id}=req.params;
+      const gastos_filtrados = await prisma.gasto.findMany({
+        select: {
+          monto: true, cant_cuotas: true,fecha: true, category: true
+        },
+        where:{
+          user_id:Number(user_id),
+          category_id:Number(cat_id)
+        },
+        orderBy: {
+          fecha: "asc" 
+        }
+      })
+      if (gastos_filtrados.length==0){
+        res.status(400)
+        return
+      }
+      res.json(gastos_filtrados)
+    })
 
-    router.get('/por_categoria/:user_id',async (req, res) => {
+
+    router.get('/agrupar_por_categoria/:user_id',async (req, res) => {
         const {user_id} = req.params;
         const gastos_por_cate = await prisma.gasto.groupBy({
             by: ["category_id"],
