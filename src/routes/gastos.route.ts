@@ -127,6 +127,16 @@ const GastosRoute = (prisma: PrismaClient)=>{
       res.json(result);
     })
 
+    router.get("/unico/:id_gasto",async (req,res)=>{
+      const {id_gasto} =req.params;
+      const result= await prisma.gasto.findUnique({
+        select: {id:true,monto:true,cant_cuotas:true,fecha:true,category:true},
+        where: {
+          id:Number(id_gasto)
+        }
+      })
+    })
+
     return router
 }
 

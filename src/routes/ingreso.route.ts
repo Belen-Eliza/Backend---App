@@ -48,6 +48,14 @@ const IngresoRoute = (prisma: PrismaClient)=>{
         })
         res.json(result);
     })
+    router.get('/unico/:ingreso_id',  async (req, res) =>{
+        const {ingreso_id}=req.params;
+        const result = await prisma.ingreso.findUnique({
+            select: {id:true,monto:true,category:true,description:true},
+            where: {id: parseInt(ingreso_id)}
+        })
+        res.json(result);
+    })
 
     
     return router
