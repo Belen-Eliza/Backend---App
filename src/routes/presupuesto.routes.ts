@@ -27,11 +27,11 @@ const PresupuestoRoute = (prisma: PrismaClient)=>{
         })
         res.json(result);
     })
-    router.get('/:id_presupuesto',  async (req, res) =>{
-        const {id_presupuesto}=req.params;
+    router.get('/unico/:presupuesto_id',  async (req, res) =>{
+        const {presupuesto_id}=req.params;
         const result = await prisma.presupuesto.findUnique({
             select: {descripcion:true,montoTotal:true,cant_cuotas:true,fecha_objetivo:true,total_acumulado:true},
-            where: {id: parseInt(id_presupuesto)}
+            where: {id: parseInt(presupuesto_id)}
         })
         res.json(result);
     })
