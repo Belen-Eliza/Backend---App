@@ -1,7 +1,5 @@
 import { type PrismaClient, type Prisma } from "@prisma/client"
 import { Router } from "express"
-import { connect } from "http2";
-
 
 
 const GastosRoute = (prisma: PrismaClient)=>{
@@ -11,7 +9,7 @@ const GastosRoute = (prisma: PrismaClient)=>{
         const {user_id,fecha_desde,fecha_hasta} = req.params
         const gastos = await prisma.gasto.findMany({
           select: {
-            monto: true, cant_cuotas: true,fecha: true, category: true
+            monto: true, cant_cuotas: true,fecha: true, category: true, id: true
           },
           where: {
             user_id: Number(user_id),
@@ -37,7 +35,7 @@ const GastosRoute = (prisma: PrismaClient)=>{
       const {fecha_desde,fecha_hasta,user_id} = req.params;
       const gastos = await prisma.gasto.findMany({
         select: {
-          monto: true, cant_cuotas: true,fecha: true, category: true
+          monto: true, cant_cuotas: true,fecha: true, category: true, id:true
         },
         where: {
           user_id: Number(user_id),
@@ -63,7 +61,7 @@ const GastosRoute = (prisma: PrismaClient)=>{
       const {user_id,cat_id}=req.params;
       const gastos_filtrados = await prisma.gasto.findMany({
         select: {
-          monto: true, cant_cuotas: true,fecha: true, category: true
+          monto: true, cant_cuotas: true,fecha: true, category: true, id:true
         },
         where:{
           user_id:Number(user_id),
@@ -127,16 +125,17 @@ const GastosRoute = (prisma: PrismaClient)=>{
       res.json(result);
     })
 
-    router.get("/unico/:id_gasto",async (req,res)=>{
-      const {id_gasto} =req.params;
+    router.get("/unico/:gasto_id",async (req,res)=>{
+      const { gasto_id} =req.params;
       const result= await prisma.gasto.findUnique({
         select: {id:true,monto:true,cant_cuotas:true,fecha:true,category:true},
         where: {
-          id:Number(id_gasto)
+          id:Number(gasto_id)
         }
       })
+      res.json(result)
     })
-
+    
     return router
 }
 
