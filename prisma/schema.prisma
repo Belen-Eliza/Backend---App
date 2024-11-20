@@ -21,7 +21,7 @@ model User {
   Presupuesto Presupuesto[]
 }
 
-model CategoryGasto { //Las categorías de gastos
+model CategoryGasto { 
   id Int @id @default(autoincrement())
   name String
   description String
@@ -29,7 +29,7 @@ model CategoryGasto { //Las categorías de gastos
   gastos Gasto[]
   gastos_fijos GastoFijo[]
 }
-model CategoryIngreso { //Las categorías de ingresos
+model CategoryIngreso { 
   id Int @id @default(autoincrement())
   name String
   description String
@@ -52,7 +52,7 @@ model GastoFijo {
   id Int @id @default(autoincrement())
   monto Float
   fecha_inicial DateTime 
-  cant_meses Int //time? 
+  cant_meses Int 
   user User @relation(fields: [user_id],references: [id])
   user_id Int 
   category CategoryGasto @relation(fields: [category_id],references: [id])
@@ -76,7 +76,7 @@ model Presupuesto {
   montoTotal Float
   cant_cuotas Int @default(1)
   fecha_objetivo DateTime
-  total_acumulado Float //guardar o calcular?
+  total_acumulado Float 
   user User @relation(fields: [user_id],references: [id])
   user_id Int
   ahorro Ahorro_Presupuesto[] 

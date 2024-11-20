@@ -22,12 +22,13 @@ const UserRoute = (prisma: PrismaClient)=>{
   })
   router.post('/login', async (req, res) => {
       const {email, password_attempt} = req.body;
+      const mail_normalizado =email.toLowerCase();
       const user = await prisma.user.findUnique({
         select: {
           id:true, mail:true,name:true,password:true,saldo:true
         },
         where: {
-          mail: email as string
+          mail: mail_normalizado
         }
       })
       if(!user || user.password!=password_attempt){
@@ -38,13 +39,13 @@ const UserRoute = (prisma: PrismaClient)=>{
       res.json(user)
   })
   router.post('/signup', async (req, res) => {
-    
     const { name, mail, password } = req.body;
+    const mail_normalizado =mail.toLowerCase();
     try {
       const result = await prisma.user.create({
         data: {
           name,
-          mail,
+          mail:mail_normalizado,
           password
         },
       })
@@ -61,7 +62,7 @@ const UserRoute = (prisma: PrismaClient)=>{
     const result = await prisma.user.update({
         data: {
             name:new_name, 
-            mail: new_mail,
+            mail: new_mail.toLowerCase(),
             password: new_password
         },
         where: {
