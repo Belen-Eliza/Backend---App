@@ -26,23 +26,25 @@ const IngresoRoute = (prisma: PrismaClient) => {
 
     router.get('/por_fecha/:user_id/:fecha_desde/:fecha_hasta', async (req, res) => {
         const { fecha_desde, fecha_hasta, user_id } = req.params;
-        const ingresos = await prisma.ingreso.findMany({
-            select: { monto: true,fecha: true, category: true },
-            where: {
-                user_id: Number(user_id),
-                fecha: {
-                    lte: new Date(fecha_hasta), // Convertido a Date
-                    gte: new Date(fecha_desde), // Convertido a Date
-                },
+        
+        const ingresos = await prisma.gasto.groupBy({
+            by: ["fecha"],
+            where: {user_id: Number(user_id),
+              
+              fecha: {
+                lte: fecha_hasta,
+                gte: fecha_desde,
+              },
             },
-            orderBy: { fecha: "asc" },
-        });
+            _sum: {monto:true}
+          })
         res.json(ingresos); // Agregada respuesta JSON
     });
 
     router.post('/', async (req, res) => {
-        const { monto, descripcion, user_id, category_id, fecha } = req.body;
-
+        const { monto, descripcion, user_id, category_id } = req.body;
+        let fecha = new Date(); //fecha de hoy, a las 00:00:00,00
+        fecha.setHours(0,0,0,0);
         const user = await prisma.user.findUnique({
             where: { id: user_id },
         });
@@ -55,7 +57,7 @@ const IngresoRoute = (prisma: PrismaClient) => {
             data: {
                 monto,
                 description: descripcion,
-                fecha: (new Date()).toISOString(),
+                fecha: fecha.toISOString(),
                 user: { connect: { id: user_id } },
                 category: { connect: { id: category_id } },
             },
@@ -72,8 +74,11 @@ const IngresoRoute = (prisma: PrismaClient) => {
     router.get('/:user_id', async (req, res) => {
         const { user_id } = req.params;
         const result = await prisma.ingreso.findMany({
-            select: { id: true, monto: true, category: true, description: true },
+            select: { id: true, monto: true, category: true, description: true,fecha:true },
             where: { user_id: parseInt(user_id) },
+            orderBy:{
+                fecha:"desc"
+            }
         });
         res.json(result);
     })

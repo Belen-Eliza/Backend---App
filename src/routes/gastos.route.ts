@@ -1,4 +1,4 @@
-import { type PrismaClient, type Prisma } from "@prisma/client"
+import { Prisma, type PrismaClient } from "@prisma/client"
 import { Router } from "express"
 
 
@@ -31,23 +31,19 @@ const GastosRoute = (prisma: PrismaClient)=>{
         
     })
 
-    router.get('/por_fecha/:user_id/:fecha_desde/:fecha_hasta', async (req,res)=>{
+    router.get('/por_fecha/:user_id/:fecha_desde/:fecha_hasta', async (req,res)=>{ //para estadisticas
       const {fecha_desde,fecha_hasta,user_id} = req.params;
-      const gastos = await prisma.gasto.findMany({
-        select: {
-          monto: true, cant_cuotas: true,fecha: true, category: true, id:true
-        },
-        where: {
-          user_id: Number(user_id),
+      
+      const gastos = await prisma.gasto.groupBy({
+        by: ["fecha"],
+        where: {user_id: Number(user_id),
           
           fecha: {
             lte: fecha_hasta,
             gte: fecha_desde,
           },
         },
-        orderBy: {
-          fecha: "asc" 
-        },
+        _sum: {monto:true}
       })
       
       if(gastos.length==0){
@@ -88,11 +84,17 @@ const GastosRoute = (prisma: PrismaClient)=>{
             _sum: {monto:true},
             
         })
+        if (gastos_por_cate.length==0) {
+          res.status(400);
+          return
+        }
         res.json(gastos_por_cate)
     })
 
     router.post('/', async (req, res) => {
       const { monto, cant_cuotas,user_id,category_id } = req.body; 
+      let fecha = new Date(); //fecha de hoy, a las 00:00:00,00
+      fecha.setHours(0,0,0,0);
       const user =await prisma.user.findUnique({
         where: {id:user_id}
       })
@@ -104,7 +106,7 @@ const GastosRoute = (prisma: PrismaClient)=>{
         data: {
           monto, 
           cant_cuotas,
-          fecha: (new Date()).toISOString(), //fecha de hoy 
+          fecha: fecha.toISOString(), 
           user: {
             connect:{
               id: user_id
