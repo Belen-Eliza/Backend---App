@@ -19,9 +19,10 @@ const GastosRoute = (prisma: PrismaClient)=>{
               gte: fecha_desde,
             },
           },
-          orderBy: {
-            fecha: "desc" //más recientes primero
-          },
+          orderBy: [
+            { fecha: "desc" },//más recientes primero
+            { timestamp: "desc"}
+          ]
         })
         if(gastos.length==0){
             res.status(400).send("Todavía no has cargado ningún gasto") 

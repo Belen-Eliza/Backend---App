@@ -42,6 +42,7 @@ model Gasto {
   monto Float
   cant_cuotas Int @default(1)
   fecha DateTime 
+  timestamp DateTime @default(now())
   user User @relation(fields: [user_id],references: [id])
   user_id Int 
   category CategoryGasto @relation(fields: [category_id],references: [id])
@@ -64,6 +65,7 @@ model Ingreso {
   monto Float
   description String
   fecha DateTime
+  timestamp DateTime @default(now())
   category CategoryIngreso @relation(fields: [category_id],references: [id])
   category_id Int
   user User @relation(fields: [user_id],references: [id])
