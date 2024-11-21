@@ -27,7 +27,7 @@ const IngresoRoute = (prisma: PrismaClient) => {
     router.get('/por_fecha/:user_id/:fecha_desde/:fecha_hasta', async (req, res) => {
         const { fecha_desde, fecha_hasta, user_id } = req.params;
         
-        const ingresos = await prisma.gasto.groupBy({
+        const ingresos = await prisma.ingreso.groupBy({
             by: ["fecha"],
             where: {user_id: Number(user_id),
               
