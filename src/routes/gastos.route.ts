@@ -64,7 +64,7 @@ const GastosRoute = (prisma: PrismaClient)=>{
           category_id:Number(cat_id)
         },
         orderBy: {
-          fecha: "asc" 
+          fecha: "desc" 
         }
       })
       if (gastos_filtrados.length==0){
