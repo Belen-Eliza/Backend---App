@@ -58,11 +58,14 @@ const UserRoute = (prisma: PrismaClient)=>{
   })
   router.patch('/edit_profile/:id',async (req, res) => { 
     const {id} =req.params;
-    const { new_name, new_mail, new_password } = req.body; //no mandar atributos a no actualizar, o chequear
+    let { new_name, new_mail, new_password } = req.body; //no mandar atributos a no actualizar, o chequear
+    if (new_mail) {
+      new_mail= new_mail.toLowerCase();
+    }
     const result = await prisma.user.update({
         data: {
             name:new_name, 
-            mail: new_mail.toLowerCase(),
+            mail: new_mail,
             password: new_password
         },
         where: {
