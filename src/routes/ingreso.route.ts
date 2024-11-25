@@ -43,8 +43,6 @@ const IngresoRoute = (prisma: PrismaClient) => {
 
     router.post('/', async (req, res) => {
         const { monto, descripcion, user_id, category_id } = req.body;
-        let fecha = new Date(); //fecha de hoy, a las 00:00:00,00
-        fecha.setHours(0,0,0,0);
         const user = await prisma.user.findUnique({
             where: { id: user_id },
         });
@@ -57,7 +55,7 @@ const IngresoRoute = (prisma: PrismaClient) => {
             data: {
                 monto,
                 description: descripcion,
-                fecha: fecha.toISOString(),
+                fecha: (new Date()).toISOString(),
                 user: { connect: { id: user_id } },
                 category: { connect: { id: category_id } },
             },
