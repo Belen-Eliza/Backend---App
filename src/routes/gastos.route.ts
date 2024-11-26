@@ -31,7 +31,7 @@ const GastosRoute = (prisma: PrismaClient)=>{
         
     })
 
-    router.get('/por_fecha/:user_id/:fecha_desde/:fecha_hasta', async (req,res)=>{ //para estadisticas
+    router.get('/por_fecha/:user_id/:fecha_desde/:fecha_hasta/', async (req,res)=>{ //para estadisticas
       const {fecha_desde,fecha_hasta,user_id} = req.params;
       
       const gastos = await prisma.gasto.groupBy({
@@ -53,14 +53,18 @@ const GastosRoute = (prisma: PrismaClient)=>{
       res.json(gastos)
     })
 
-    router.get('/por_categoria/:user_id/:cat_id',async (req, res) => {
-      const {user_id,cat_id}=req.params;
+    router.get('/filtrar/:user_id/:cat_id/:fecha_desde/:fecha_hasta',async (req, res) => {
+      const {user_id,cat_id,fecha_desde,fecha_hasta}=req.params;
       const gastos_filtrados = await prisma.gasto.findMany({
         select: {
           monto: true, cant_cuotas: true,fecha: true, category: true, id:true
         },
         where:{
           user_id:Number(user_id),
+          fecha: {
+            lte: fecha_hasta,
+            gte: fecha_desde,
+          },
           category_id:Number(cat_id)
         },
         orderBy: {
@@ -72,7 +76,7 @@ const GastosRoute = (prisma: PrismaClient)=>{
         return
       }
       res.json(gastos_filtrados)
-    })
+    });
 
 
     router.get('/agrupar_por_categoria/:user_id',async (req, res) => {
