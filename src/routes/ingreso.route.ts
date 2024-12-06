@@ -38,7 +38,11 @@ const IngresoRoute = (prisma: PrismaClient) => {
             },
             _sum: {monto:true}
           })
-        res.json(ingresos); // Agregada respuesta JSON
+          if (ingresos.length === 0) {
+            res.status(400).send("Todavía no has cargado ningún ingreso");
+            return;
+        }
+        res.json(ingresos); 
     });
 
     router.post('/', async (req, res) => {

@@ -46,7 +46,7 @@ const GastosRoute = (prisma: PrismaClient)=>{
       })
       
       if(gastos.length==0){
-          res.status(400)
+          res.status(400).send()
           return
       }
       res.json(gastos)
