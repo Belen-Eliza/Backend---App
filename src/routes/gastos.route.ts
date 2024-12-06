@@ -33,7 +33,6 @@ const GastosRoute = (prisma: PrismaClient)=>{
 
     router.get('/por_fecha/:user_id/:fecha_desde/:fecha_hasta/', async (req,res)=>{ //para estadisticas
       const {fecha_desde,fecha_hasta,user_id} = req.params;
-      
       const gastos = await prisma.gasto.groupBy({
         by: ["fecha"],
         where: {user_id: Number(user_id),
