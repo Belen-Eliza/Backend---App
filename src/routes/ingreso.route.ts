@@ -7,13 +7,34 @@ const IngresoRoute = (prisma: PrismaClient) => {
     router.get('/historial/:user_id/:fecha_desde/:fecha_hasta', async (req, res) => { 
         const { user_id, fecha_desde, fecha_hasta } = req.params;
         const ingresos = await prisma.ingreso.findMany({
-            select: { monto: true, fecha: true, category: true },
+            select: { monto: true, fecha: true, category: true, id:true  },
             where: {
                 user_id: Number(user_id),
                 fecha: {
                     lte: new Date(fecha_hasta), // Convertido a Date
                     gte: new Date(fecha_desde), // Convertido a Date
                 },
+            },
+            orderBy: { fecha: "desc" },
+        });
+        if (ingresos.length === 0) {
+            res.status(400).send("Todavía no has cargado ningún ingreso");
+            return;
+        }
+        res.json(ingresos);
+    });
+
+    router.get('/por_cate/:user_id/:cate_id/:fecha_desde/:fecha_hasta', async (req, res) => { 
+        const { user_id, fecha_desde, fecha_hasta, cate_id } = req.params;
+        const ingresos = await prisma.ingreso.findMany({
+            select: { monto: true, fecha: true, category: true, id:true },
+            where: {
+                user_id: Number(user_id),
+                fecha: {
+                    lte: new Date(fecha_hasta), // Convertido a Date
+                    gte: new Date(fecha_desde), // Convertido a Date
+                },
+                category_id:Number(cate_id)
             },
             orderBy: { fecha: "desc" },
         });
