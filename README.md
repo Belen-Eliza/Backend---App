@@ -1,9 +1,12 @@
-#Variables de entorno:
+## Variables de entorno:
 DATABASE_URL="file:./dev.db"
 
-#Librerías:
+## Librerías:
 Prisma
 Express
 
-#Puesta en funcionamiento
---npm run start
+## Puesta en funcionamiento
+>>npm run start
+
+## Llenar de cero:
+>>npx tsx src/init.ts
