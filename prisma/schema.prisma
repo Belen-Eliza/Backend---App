@@ -7,19 +7,29 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model PasswordRecoveryToken {
+  id         Int      @id @default(autoincrement())
+  token      String
+  createdAt  DateTime @default(now())
+  expiresAt  DateTime
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int
+}
+
 model User {
   id Int @id @default(autoincrement())
   mail String @unique
   name String
   password String
   saldo Float @default(0)
-
   gastos Gasto[]
   gastos_fijos GastoFijo[]
   ingresos Ingreso[]
 
   Presupuesto Presupuesto[]
+  PasswordRecoveryToken PasswordRecoveryToken[] // Relación con tokens
 }
+
 
 model CategoryGasto { 
   id Int @id @default(autoincrement())
