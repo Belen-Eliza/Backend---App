@@ -167,9 +167,20 @@ async function main() {
                 fecha_objetivo: (new Date(2024,7,2)).toISOString(),
                 total_acumulado: 0,
                 user_id: 1
+            },
+            {
+                descripcion: "Lollapalooza",
+                montoTotal: 4000000,
+                cant_cuotas: 15,
+                fecha_objetivo: (new Date(2025,3,21)).toISOString(),
+                total_acumulado: 0,
+                user_id: 1
             }
         ]
-    })
+    });
+    console.log("Presupuestos: \n",presupuestos);
+
+    
 }
 
 main()
