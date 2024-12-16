@@ -1,308 +1,118 @@
-import {
-    Pressable,
-    Text,
-    TextInput,
-    ScrollView,
-    View,
-    Platform,
-    StyleSheet,
-    Keyboard,
-    KeyboardAvoidingView,
-    Dimensions,
-    TouchableWithoutFeedback,
-  } from "react-native";
-  import { estilos, colores } from "@/components/global_styles";
-  import { useEffect, useState } from "react";
-  import { useUserContext } from "@/context/UserContext";
-  import { router } from "expo-router";
-  import DateTimePicker, {
-    DateTimePickerEvent,
-    DateTimePickerAndroid,
-    AndroidNativeProps,
-  } from "@react-native-community/datetimepicker";
-  import Toast from "react-native-toast-message";
-  import { Dismiss_keyboard } from "@/components/botones";
-  import { success_alert, error_alert } from "@/components/my_alert";
-  
-  import Animated, {
-    useAnimatedStyle,
-    useSharedValue,
-    withSpring,
-  } from "react-native-reanimated";
-  
-  type Presupuesto = {
-    descripcion: string;
-    montoTotal: number;
-    cant_cuotas: number;
-    fecha_objetivo: string;
-    total_acumulado: number;
-    user_id: number;
-  };
-  function es_valido(presupuesto: Presupuesto) {
-    return (
-      presupuesto.cant_cuotas != 0 &&
-      presupuesto.descripcion.length != 0 &&
-      presupuesto.montoTotal != 0
-    );
-  }
-  
-  export default function Presupuesto() {
-    const context = useUserContext();
-    const [presupuesto, setPresupuesto] = useState<Presupuesto>({
-      descripcion: "",
-      montoTotal: 0,
-      cant_cuotas: 0,
-      fecha_objetivo: "",
-      total_acumulado: 0,
-      user_id: context.id,
-    });
-    const [fecha, setFecha] = useState(new Date());
-    const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
-    const [keyboardHeight, setKeyboardHeight] = useState(300);
-  
-    useEffect(() => {
-      const showSubscription = Keyboard.addListener(
-        "keyboardDidShow",
-        handleKeyboardShow
-      );
-      const hideSubscription = Keyboard.addListener(
-        "keyboardDidHide",
-        handleKeyboardHide
-      );
-  
-      return () => {
-        showSubscription.remove();
-      };
-    }, []);
-  
-    const handleKeyboardShow = (event: any) => {
-      setIsKeyboardVisible(true);
-      setKeyboardHeight(event.endCoordinates.height);
-    };
-  
-    const handleKeyboardHide = (event: any) => {
-      setIsKeyboardVisible(false);
-    };
-  
-    const handler_descripcion = (input: string) => {
-      setPresupuesto((pre) => {
-        pre.descripcion = input;
-        return pre;
+import { type PrismaClient } from "@prisma/client";
+import { Router } from "express";
+
+const PresupuestoRoute = (prisma: PrismaClient) => {
+  const router = Router();
+
+  router.post("/", async (req, res) => {
+    const { descripcion, montoTotal, cant_cuotas, fecha_objetivo, user_id } =
+      req.body;
+
+    try {
+      const presupuesto = await prisma.presupuesto.create({
+        data: {
+          descripcion,
+          montoTotal,
+          cant_cuotas,
+          fecha_objetivo: new Date(fecha_objetivo),
+          total_acumulado: 0, // Inicialmente 0
+          user_id,
+        },
       });
-    };
-    const handler_monto = (input: string) => {
-      let aux = Number(input.replace(",", "."));
-      if (Number.isNaN(aux)) {
-        error_alert("El valor ingresado debe ser un número");
-      } else {
-        setPresupuesto((pre) => {
-          pre.montoTotal = aux;
-          return pre;
-        });
-      }
-    };
-    const handler_cuotas = (input: string) => {
-      let aux = Number(input.replace(",", "."));
-      if (Number.isNaN(aux)) {
-        error_alert("El valor ingresado debe ser un número");
-      } else {
-        setPresupuesto((pre) => {
-          pre.cant_cuotas = aux;
-          return pre;
-        });
-      }
-    };
-    const onChangeDate = (
-      event: DateTimePickerEvent,
-      selectedDate: Date | undefined
-    ) => {
-      let currentDate = new Date(0);
-      if (selectedDate != undefined) currentDate = selectedDate;
-      setFecha(currentDate);
-    };
-    const showMode = (currentMode: AndroidNativeProps["mode"]) => {
-      DateTimePickerAndroid.open({
-        value: fecha,
-        onChange: onChangeDate,
-        mode: currentMode,
-        is24Hour: false,
-        minimumDate: new Date(),
+
+      const categoria = await prisma.categoryGasto.create({
+        data: {
+          name: descripcion,
+          description: `Categoría asociada al presupuesto ${descripcion}`,
+        },
       });
-    };
-    const showDatepicker = () => {
-      showMode("date");
-    };
-  
-    const scale = useSharedValue(1);
-  
-    const animatedStyle = useAnimatedStyle(() => {
-      return {
-        transform: [{ scale: scale.value }],
-      };
-    });
-  
-    const handlePressIn = () => {
-      scale.value = withSpring(1.1, { damping: 5 });
-    };
-  
-    const handlePressOut = () => {
-      scale.value = withSpring(1, { damping: 5 });
-    };
-  
-    const confirmar = async () => {
-      presupuesto.fecha_objetivo = fecha.toISOString();
-      presupuesto.user_id = context.id;
-      presupuesto.total_acumulado = 0;
-  
-      if (!es_valido(presupuesto) || fecha <= new Date()) {
-        error_alert(
-          "Complete los espacios en blanco o proporcione una fecha objetivo válida"
-        );
+
+      res.status(201).json({ presupuesto, categoria });
+    } catch (error) {
+      console.error(error);
+      res
+        .status(500)
+        .send({ message: "Error al crear el presupuesto y la categoría." });
+    }
+  });
+
+  // Actualizar el total acumulado de un presupuesto
+  router.put("/actualizar/:presupuesto_id", async (req, res) => {
+    const { presupuesto_id } = req.params;
+    const { gasto } = req.body;
+
+    try {
+      const presupuesto = await prisma.presupuesto.findUnique({
+        where: { id: Number(presupuesto_id) },
+      });
+
+      if (!presupuesto) {
+        res.status(404).send({ message: "Presupuesto no encontrado." });
         return;
       }
-  
-      try {
-        // Crear presupuesto
-        const rsp = await fetch(
-          `${process.env.EXPO_PUBLIC_DATABASE_URL}/presupuestos/`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(presupuesto),
-          }
-        );
-  
-        if (!rsp.ok) {
-          throw new Error("Error al crear el presupuesto");
-        }
-  
-        const presupuestoCreado = await rsp.json(); // Obtener el presupuesto creado
-  
-        // Crear categoría asociada al presupuesto
-        const nuevaCategoria = {
-          nombre: presupuesto.descripcion, // Usa la descripción del presupuesto como nombre de la categoría
-          user_id: context.id,
-          presupuesto_id: presupuestoCreado.id, // Asociar al presupuesto creado
-        };
-  
-        const rspCategoria = await fetch(
-          `${process.env.EXPO_PUBLIC_DATABASE_URL}/categorias/`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(nuevaCategoria),
-          }
-        );
-  
-        if (!rspCategoria.ok) {
-          throw new Error("Error al crear la categoría asociada");
-        }
-  
-        // Si todo está bien, redirigir y mostrar éxito
-        router.back();
-        setTimeout(
-          () => success_alert("Presupuesto y categoría creados correctamente"),
-          200
-        );
-      } catch (e) {
-        error_alert(String(e));
-        console.log(e);
+
+      const nuevoTotalAcumulado = presupuesto.total_acumulado + gasto;
+
+      if (nuevoTotalAcumulado > presupuesto.montoTotal) {
+        res.status(400).send({
+          message: "El gasto excede el monto total del presupuesto.",
+          limite: presupuesto.montoTotal - presupuesto.total_acumulado,
+        });
+        return;
       }
-    };
-  
-    return (
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={estilos.flex1}
-      >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-          <View style={[estilos.mainView, { alignItems: "center" }]}>
-            {isKeyboardVisible && (
-              <Dismiss_keyboard
-                setVisible={setIsKeyboardVisible}
-                pos_y={Dimensions.get("screen").height - keyboardHeight - 150}
-              />
-            )}
-            <ScrollView
-              contentContainerStyle={[estilos.mainView, { alignItems: "center" }]}
-              automaticallyAdjustKeyboardInsets={true}
-            >
-              <Text style={[estilos.subtitulo, estilos.poco_margen]}>Monto</Text>
-              <TextInput
-                style={[estilos.textInput, estilos.poco_margen]}
-                keyboardType="decimal-pad"
-                onChangeText={handler_monto}
-                placeholder="Ingresar valor"
-              ></TextInput>
-  
-              <Text style={estilos.subtitulo}>Cuotas</Text>
-              <TextInput
-                style={[estilos.textInput, estilos.poco_margen]}
-                keyboardType="number-pad"
-                onChangeText={handler_cuotas}
-                placeholder="Ingresar cuotas"
-              ></TextInput>
-  
-              <Text style={estilos.subtitulo}>Descripción</Text>
-              <TextInput
-                style={[estilos.textInput, estilos.poco_margen]}
-                keyboardType="default"
-                onChangeText={handler_descripcion}
-              ></TextInput>
-  
-              <Text style={estilos.subtitulo}>Fecha objetivo:</Text>
-              {Platform.OS === "android" ? (
-                <View style={styles.androidDateTime}>
-                  <Pressable onPress={showDatepicker}>
-                    <Text style={estilos.show_date}>
-                      {fecha.toLocaleDateString([], {
-                        weekday: "short",
-                        year: "numeric",
-                        month: "short",
-                        day: "2-digit",
-                      })}
-                    </Text>
-                  </Pressable>
-                </View>
-              ) : (
-                <DateTimePicker
-                  style={estilos.margen}
-                  value={fecha}
-                  onChange={onChangeDate}
-                  mode="date"
-                  minimumDate={new Date()}
-                />
-              )}
-  
-              <Pressable
-                onPressIn={handlePressIn}
-                onPressOut={handlePressOut}
-                onPress={confirmar}
-              >
-                <Animated.View
-                  style={[
-                    estilos.tarjeta,
-                    estilos.centrado,
-                    colores.botones,
-                    { maxHeight: 50 },
-                    animatedStyle,
-                  ]}
-                >
-                  <Text style={estilos.subtitulo}>Confirmar</Text>
-                </Animated.View>
-              </Pressable>
-            </ScrollView>
-          </View>
-        </TouchableWithoutFeedback>
-        <Toast />
-      </KeyboardAvoidingView>
-    );
-  }
-  
-  const styles = StyleSheet.create({
-    androidDateTime: {
-      flexDirection: "row",
-      justifyContent: "space-around",
-    },
+
+      const presupuestoActualizado = await prisma.presupuesto.update({
+        where: { id: Number(presupuesto_id) },
+        data: { total_acumulado: nuevoTotalAcumulado },
+      });
+
+      res.json(presupuestoActualizado);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Error al actualizar el presupuesto." });
+    }
   });
-  
+
+  // Eliminar un presupuesto
+  router.delete("/:presupuesto_id", async (req, res) => {
+    const { presupuesto_id } = req.params;
+
+    try {
+      await prisma.presupuesto.delete({
+        where: { id: Number(presupuesto_id) },
+      });
+
+      res.status(200).send({ message: "Presupuesto eliminado correctamente." });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Error al eliminar el presupuesto." });
+    }
+  });
+
+  // Obtener todos los presupuestos vinculados a un usuario
+  router.get("/user/:user_id", async (req, res) => {
+    const { user_id } = req.params;
+
+    try {
+      const presupuestos = await prisma.presupuesto.findMany({
+        where: { user_id: Number(user_id) },
+      });
+
+      if (presupuestos.length === 0) {
+        res.status(404).send({
+          message: "No se encontraron presupuestos para este usuario.",
+        });
+        return;
+      }
+
+      res.json(presupuestos);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Error al obtener los presupuestos." });
+    }
+  });
+
+  return router;
+};
+
+export default PresupuestoRoute;
