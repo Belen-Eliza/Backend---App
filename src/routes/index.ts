@@ -6,6 +6,7 @@ import CategoriaRoute from "./categorias.route"
 import IngresoRoute from "./ingreso.route"
 import GastosFijosRoute from "./gasto_fijo.route"
 import PresupuestoRoute from "./presupuesto.routes"
+import passwordRoute from "./auth"
 
 import { type Express } from "express"
 
@@ -23,6 +24,7 @@ const addRoutes = (app: Express, prisma: PrismaClient) => {
     app.use('/ingresos/', IngresoRoute(prisma))
     app.use('/gastos_fijos/', GastosFijosRoute(prisma))
     app.use('/presupuestos/', PresupuestoRoute(prisma))
+    app.use('/password/', passwordRoute(prisma))
 }
 
 export default addRoutes
