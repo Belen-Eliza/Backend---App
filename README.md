@@ -8,7 +8,8 @@ DATABASE_URL="file:./dev.db"
 npm install --save @sendgrid/mail
 
 ## Puesta en funcionamiento
->>npm run start
+>npm run start
+>npm run dev
 
 ## Llenar de cero:
->>npx tsx src/init.ts
+>npx tsx src/init.ts
