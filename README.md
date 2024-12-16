@@ -2,8 +2,10 @@
 DATABASE_URL="file:./dev.db"
 
 ## Librerías:
-Prisma
-Express
+*Prisma
+*Express
+*Mail Service: https://www.npmjs.com/package/@sendgrid/mail
+npm install --save @sendgrid/mail
 
 ## Puesta en funcionamiento
 >>npm run start
