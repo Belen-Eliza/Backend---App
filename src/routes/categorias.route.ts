@@ -6,7 +6,7 @@ const CategoriaRoute = (prisma: PrismaClient)=>{
     
     router.get('/de_gastos',  async (req, res) =>{ //todas las categorias de gastos
         const result = await prisma.categoryGasto.findMany({
-            select: {id:true,name:true,description:true},
+            select: {id:true,name:true},
         })
         res.json(result);
     })
@@ -21,7 +21,7 @@ const CategoriaRoute = (prisma: PrismaClient)=>{
 
     router.get('/de_ingresos',  async (req, res) =>{  //todas las categorias de ingresos
         const result = await prisma.categoryIngreso.findMany({
-            select: {id:true,name:true,description:true},
+            select: {id:true,name:true},
         })
         res.json(result);
     })

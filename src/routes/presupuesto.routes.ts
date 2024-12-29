@@ -13,26 +13,17 @@ const PresupuestoRoute = (prisma: PrismaClient) => {
         data: {
           descripcion,
           montoTotal,
-          cant_cuotas,
           fecha_objetivo: new Date(fecha_objetivo),
           total_acumulado: 0, // Inicialmente 0
           user_id,
         },
       });
-
-      const categoria = await prisma.categoryGasto.create({
-        data: {
-          name: descripcion,
-          description: `Categoría asociada al presupuesto ${descripcion}`,
-        },
-      });
-
-      res.status(201).json({ presupuesto, categoria });
+      res.json(presupuesto)
     } catch (error) {
       console.error(error);
       res
         .status(500)
-        .send({ message: "Error al crear el presupuesto y la categoría." });
+        .send({ message: "Error al crear el presupuesto" });
     }
   });
 
