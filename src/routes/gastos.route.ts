@@ -12,6 +12,7 @@ const GastosRoute = (prisma: PrismaClient) => {
           fecha: true,
           category: true,
           id: true,
+          description:true
         },
         where: {
           user_id: Number(user_id),
@@ -65,6 +66,7 @@ const GastosRoute = (prisma: PrismaClient) => {
           fecha: true,
           category: true,
           id: true,
+          description: true
         },
         where: {
           user_id: Number(user_id),
@@ -106,7 +108,6 @@ const GastosRoute = (prisma: PrismaClient) => {
     let inicio = new Date(mes);
     inicio.setDate(1);
     let fin = new Date(inicio.getFullYear(), inicio.getMonth() + 1, 0);
-    console.log(inicio," - ", fin)
     const gastos_por_cate = await prisma.gasto.groupBy({
       by: ["category_id"],
 
@@ -126,7 +127,7 @@ const GastosRoute = (prisma: PrismaClient) => {
   });
 
   router.post("/", async (req, res) => {
-    const { monto, user_id, category_id } = req.body;
+    const { monto, user_id, category_id, description } = req.body;
 
     const user = await prisma.user.findUnique({
       where: { id: user_id },
@@ -140,6 +141,7 @@ const GastosRoute = (prisma: PrismaClient) => {
       data: {
         monto,
         fecha: new Date().toISOString(),
+        description,
         user: {
           connect: {
             id: user_id,
@@ -176,12 +178,6 @@ const GastosRoute = (prisma: PrismaClient) => {
         },
       },
     });
-    // await prisma.presupuesto.update({
-    //   where: {
-    //     id: category.id,
-    //   },
-    //   data: { total_acumulado: monto },
-    // });
 
     res.json(result);
   });
