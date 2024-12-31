@@ -5,7 +5,7 @@ const PresupuestoRoute = (prisma: PrismaClient) => {
   const router = Router();
 
   router.post("/", async (req, res) => {
-    const { descripcion, montoTotal, cant_cuotas, fecha_objetivo, user_id } =
+    const { descripcion, montoTotal, fecha_objetivo, user_id } =
       req.body;
 
     try {
@@ -102,6 +102,16 @@ const PresupuestoRoute = (prisma: PrismaClient) => {
       res.status(500).send({ message: "Error al obtener los presupuestos." });
     }
   });
+
+  router.get("/unico/:presupuesto_id",async(req,res)=>{
+    const { presupuesto_id } = req.params;
+    const presupuesto = await prisma.presupuesto.findUnique({
+      where:{
+        id:parseInt(presupuesto_id)
+      }
+    });
+    res.json(presupuesto)
+  })
 
   return router;
 };
