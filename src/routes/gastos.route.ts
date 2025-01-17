@@ -81,7 +81,7 @@ const GastosRoute = (prisma: PrismaClient) => {
         },
       });
       if (gastos_filtrados.length == 0) {
-        res.status(400);
+        res.status(400).send();
         return;
       }
       res.json(gastos_filtrados);
