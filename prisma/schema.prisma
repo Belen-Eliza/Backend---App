@@ -72,6 +72,7 @@ model Presupuesto {
   montoTotal Float
   fecha_objetivo DateTime
   total_acumulado Float 
+  activo Int @default(1)
   user User @relation(fields: [user_id],references: [id])
   user_id Int
   ahorro Ahorro_Presupuesto[] 
