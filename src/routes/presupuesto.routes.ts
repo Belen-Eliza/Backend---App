@@ -87,6 +87,9 @@ const PresupuestoRoute = (prisma: PrismaClient) => {
     try {
       const presupuestos = await prisma.presupuesto.findMany({
         where: { user_id: Number(user_id) },
+        orderBy:{
+          activo: "desc",
+        }
       });
 
       if (presupuestos.length === 0) {
