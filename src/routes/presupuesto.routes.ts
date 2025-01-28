@@ -138,7 +138,6 @@ const PresupuestoRoute = (prisma: PrismaClient) => {
   router.patch("/:presupuesto_id",async(req,res)=>{
     const {presupuesto_id} =req.params;
     const { new_desc, new_amount, new_act, new_date } = req.body;
-
     const result = await prisma.presupuesto.update({
       data: {
           descripcion: new_desc,
