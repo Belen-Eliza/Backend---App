@@ -5,7 +5,7 @@ const PresupuestoRoute = (prisma: PrismaClient) => {
   const router = Router();
 
   router.post("/", async (req, res) => {
-    const { descripcion, montoTotal, cant_cuotas, fecha_objetivo, user_id } =
+    const { descripcion, montoTotal, fecha_objetivo, user_id } =
       req.body;
 
     try {
@@ -13,26 +13,17 @@ const PresupuestoRoute = (prisma: PrismaClient) => {
         data: {
           descripcion,
           montoTotal,
-          cant_cuotas,
           fecha_objetivo: new Date(fecha_objetivo),
           total_acumulado: 0, // Inicialmente 0
           user_id,
         },
       });
-
-      const categoria = await prisma.categoryGasto.create({
-        data: {
-          name: descripcion,
-          description: `Categoría asociada al presupuesto ${descripcion}`,
-        },
-      });
-
-      res.status(201).json({ presupuesto, categoria });
+      res.json(presupuesto)
     } catch (error) {
       console.error(error);
       res
         .status(500)
-        .send({ message: "Error al crear el presupuesto y la categoría." });
+        .send({ message: "Error al crear el presupuesto" });
     }
   });
 
@@ -111,6 +102,56 @@ const PresupuestoRoute = (prisma: PrismaClient) => {
       res.status(500).send({ message: "Error al obtener los presupuestos." });
     }
   });
+
+  router.get("/activos/:user_id", async (req, res) => {
+    const { user_id } = req.params;
+
+    try {
+      const presupuestos = await prisma.presupuesto.findMany({
+        where: { user_id: Number(user_id), activo: 1 },
+      });
+
+      if (presupuestos.length === 0) {
+        res.status(404).send({
+          message: "No se encontraron presupuestos para este usuario.",
+        });
+        return;
+      }
+
+      res.json(presupuestos);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ message: "Error al obtener los presupuestos." });
+    }
+  });
+
+  router.get("/unico/:presupuesto_id",async(req,res)=>{
+    const { presupuesto_id } = req.params;
+    const presupuesto = await prisma.presupuesto.findUnique({
+      where:{
+        id:parseInt(presupuesto_id)
+      }
+    });
+    res.json(presupuesto)
+  });
+
+  router.patch("/:presupuesto_id",async(req,res)=>{
+    const {presupuesto_id} =req.params;
+    const { new_desc, new_amount, new_act, new_date } = req.body;
+    const result = await prisma.presupuesto.update({
+      data: {
+          descripcion: new_desc,
+          fecha_objetivo: new_date,
+          montoTotal: new_amount,
+          activo: new_act
+      },
+      where: {
+          id: parseInt(presupuesto_id)
+      },
+  })
+
+    res.json(result);
+  })
 
   return router;
 };

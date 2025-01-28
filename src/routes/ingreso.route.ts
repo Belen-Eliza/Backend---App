@@ -7,7 +7,7 @@ const IngresoRoute = (prisma: PrismaClient) => {
     router.get('/historial/:user_id/:fecha_desde/:fecha_hasta', async (req, res) => { 
         const { user_id, fecha_desde, fecha_hasta } = req.params;
         const ingresos = await prisma.ingreso.findMany({
-            select: { monto: true, fecha: true, category: true, id:true  },
+            select: { monto: true, fecha: true, category: true, id:true , description:true},
             where: {
                 user_id: Number(user_id),
                 fecha: {
@@ -27,7 +27,7 @@ const IngresoRoute = (prisma: PrismaClient) => {
     router.get('/por_cate/:user_id/:cate_id/:fecha_desde/:fecha_hasta', async (req, res) => { 
         const { user_id, fecha_desde, fecha_hasta, cate_id } = req.params;
         const ingresos = await prisma.ingreso.findMany({
-            select: { monto: true, fecha: true, category: true, id:true },
+            select: { monto: true, fecha: true, category: true, id:true ,description:true},
             where: {
                 user_id: Number(user_id),
                 fecha: {

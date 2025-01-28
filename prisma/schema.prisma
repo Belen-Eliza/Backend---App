@@ -23,7 +23,6 @@ model User {
   password String
   saldo Float @default(0)
   gastos Gasto[]
-  gastos_fijos GastoFijo[]
   ingresos Ingreso[]
 
   Presupuesto Presupuesto[]
@@ -34,15 +33,12 @@ model User {
 model CategoryGasto { 
   id Int @id @default(autoincrement())
   name String
-  description String
 
   gastos Gasto[]
-  gastos_fijos GastoFijo[]
 }
 model CategoryIngreso { 
   id Int @id @default(autoincrement())
   name String
-  description String
 
   ingresos Ingreso[]
 }
@@ -50,29 +46,19 @@ model CategoryIngreso {
 model Gasto {
   id Int @id @default(autoincrement())
   monto Float
-  cant_cuotas Int @default(1)
   fecha DateTime 
+  description String?
   user User @relation(fields: [user_id],references: [id])
   user_id Int 
   category CategoryGasto @relation(fields: [category_id],references: [id])
   category_id Int
 }
 
-model GastoFijo {
-  id Int @id @default(autoincrement())
-  monto Float
-  fecha_inicial DateTime 
-  cant_meses Int 
-  user User @relation(fields: [user_id],references: [id])
-  user_id Int 
-  category CategoryGasto @relation(fields: [category_id],references: [id])
-  category_id Int
-}
 
 model Ingreso {
   id Int @id @default(autoincrement())
   monto Float
-  description String
+  description String?
   fecha DateTime
   category CategoryIngreso @relation(fields: [category_id],references: [id])
   category_id Int
@@ -84,9 +70,9 @@ model Presupuesto {
   id Int @id @default(autoincrement())
   descripcion String
   montoTotal Float
-  cant_cuotas Int @default(1)
   fecha_objetivo DateTime
   total_acumulado Float 
+  activo Int @default(1)
   user User @relation(fields: [user_id],references: [id])
   user_id Int
   ahorro Ahorro_Presupuesto[] 

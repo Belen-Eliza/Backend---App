@@ -4,8 +4,9 @@ import { Router } from "express"
 const Ahorro_PresupuestoRoute = (prisma: PrismaClient)=>{
     const router = Router();
     router.post('/', async (req, res) => {
-        const { monto, fecha,user_id,presupuesto_id } = req.body;
-
+        let { monto, fecha,user_id,presupuesto_id } = req.body;
+        user_id=parseInt(user_id);
+        presupuesto_id=parseInt(presupuesto_id);
         //chequear que los datos sean correctos
         const user =await prisma.user.findUnique({
             where: {id:user_id}
