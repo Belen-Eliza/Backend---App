@@ -107,7 +107,9 @@ const GastosRoute = (prisma: PrismaClient) => {
     const { user_id, mes } = req.params;
     let inicio = new Date(mes);
     inicio.setDate(1);
-    let fin = new Date(inicio.getFullYear(), inicio.getMonth() + 1, 0);
+    
+    let fin = new Date(inicio.getFullYear(), inicio.getMonth() + 1);
+    
     const gastos_por_cate = await prisma.gasto.groupBy({
       by: ["category_id"],
 

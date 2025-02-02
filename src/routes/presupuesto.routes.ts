@@ -93,7 +93,7 @@ const PresupuestoRoute = (prisma: PrismaClient) => {
       });
 
       if (presupuestos.length === 0) {
-        res.status(404).send({
+        res.status(400).send({
           message: "No se encontraron presupuestos para este usuario.",
         });
         return;
