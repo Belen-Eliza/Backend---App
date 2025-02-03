@@ -9,7 +9,6 @@ npm install --save @sendgrid/mail
 
 ## Puesta en funcionamiento
 * npm run start
-* npm run dev
 
 ## Llenar de cero:
 > npx tsx src/init.ts
