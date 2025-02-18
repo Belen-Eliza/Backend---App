@@ -26,8 +26,11 @@ const GastosRoute = (prisma: PrismaClient) => {
  },
       });
       if (gastos.length == 0) {
-@@ -34,102 +33,17 @@
+        res.status(400).send();
+        return;
     }
+    res.json(gastos);
+  }
   );
 
   router.get("/por_fecha/:user_id/:fecha_desde/:fecha_hasta/", async (req, res) => {
